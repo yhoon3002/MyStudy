@@ -4,16 +4,16 @@ import java.io.*;
 public class Lexer {
 
     private boolean isEof = false;
-    private char ch = ' '; // ÇöÀç character 
-    private BufferedReader input; // inputÀ» ÀÐ´Âµ¥ »ç¿ëµÊ
-    private String line = ""; // ÇöÀç line
-    private int lineno = 0; // ÇöÀç fileÀÇ line
-    private int col = 1; // ÇöÀç fileÀÇ column ¼ö
+    private char ch = ' '; // í˜„ìž¬ character 
+    private BufferedReader input; // inputì„ ì½ëŠ”ë° ì‚¬ìš©ë¨
+    private String line = ""; // í˜„ìž¬ line
+    private int lineno = 0; // í˜„ìž¬ fileì˜ line
+    private int col = 1; // í˜„ìž¬ fileì˜ column ìˆ˜
     private final String letters = "abcdefghijklmnopqrstuvwxyz"
-        + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // ¸ðµç °¡´ÉÇÑ ±ÛÀÚ
-    private final String digits = "0123456789"; // ¸ðµç °¡´ÉÇÑ ¼ö
-    private final char eolnCh = '\n'; // lineÀÇ ³¡
-    private final char eofCh = '\004'; // fileÀÇ ³¡
+        + "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // ëª¨ë“  ê°€ëŠ¥í•œ ê¸€ìž
+    private final String digits = "0123456789"; // ëª¨ë“  ê°€ëŠ¥í•œ ìˆ˜
+    private final char eolnCh = '\n'; // lineì˜ ë
+    private final char eofCh = '\004'; // fileì˜ ë
     
 
     public Lexer (String fileName) { // source filename
@@ -49,12 +49,12 @@ public class Lexer {
         return line.charAt(col);
     }
             
-    // ¸¸¾à ÇöÀç character°¡ letter ÀÌ¶ó¸é °è¼Ó °¡´Ù°¡ 
-	// letter ¶Ç´Â digitÀÌ ¾Æ´Ñ °ÍÀ» ¸¸³ª¸é, keyword·Î return ÇØÁØ´Ù.
-    // ¸¶Âù°¡Áö·Î, ¸¸¾à ÇöÀç character°¡ digit ÀÌ¶ó¸é °è¼Ó °¡´Ù°¡
-    // digitÀÌ ¾Æ´Ñ °ÍÀ» ¸¸³­´Ù¸é . ÀÎÁö¸¦ È®ÀÎÇÏ°í 
-    // .ÀÌ¶ó¸é ¼Ò¼öÁ¡À» ¸¸µé°Ô µÈ´Ù.
-    // ¶ÇÇÑ ' ', '\t', '\r', '\EOL'Àº °Ç³Ê ¶Ú´Ù.
+    // ë§Œì•½ í˜„ìž¬ characterê°€ letter ì´ë¼ë©´ ê³„ì† ê°€ë‹¤ê°€ 
+	// letter ë˜ëŠ” digitì´ ì•„ë‹Œ ê²ƒì„ ë§Œë‚˜ë©´, keywordë¡œ return í•´ì¤€ë‹¤.
+    // ë§ˆì°¬ê°€ì§€ë¡œ, ë§Œì•½ í˜„ìž¬ characterê°€ digit ì´ë¼ë©´ ê³„ì† ê°€ë‹¤ê°€
+    // digitì´ ì•„ë‹Œ ê²ƒì„ ë§Œë‚œë‹¤ë©´ . ì¸ì§€ë¥¼ í™•ì¸í•˜ê³  
+    // .ì´ë¼ë©´ ì†Œìˆ˜ì ì„ ë§Œë“¤ê²Œ ëœë‹¤.
+    // ë˜í•œ ' ', '\t', '\r', '\EOL'ì€ ê±´ë„ˆ ë›´ë‹¤.
     public Token next( ) { // Return next token
         do {
             if (isLetter(ch)) { // ident or keyword
@@ -142,19 +142,19 @@ public class Lexer {
         } while (true);
     } // next
 
-    // c°¡ letterÀÎÁö ¾Æ´ÑÁö È®ÀÎÇÏ´Â °ÍÀÌ´Ù.
+    // cê°€ letterì¸ì§€ ì•„ë‹Œì§€ í™•ì¸í•˜ëŠ” ê²ƒì´ë‹¤.
     private boolean isLetter(char c) {
         return (c>='a' && c<='z' || c>='A' && c<='Z');
     }
     
-    // c°¡ digitÀÎÁö ¾Æ´ÑÁö È®ÀÎÇÏ´Â °ÍÀÌ´Ù.
+    // cê°€ digitì¸ì§€ ì•„ë‹Œì§€ í™•ì¸í•˜ëŠ” ê²ƒì´ë‹¤.
     private boolean isDigit(char c) {
         // student exercise
         return (c >= '0' && c <= '9');
     }
     
-    // ch°¡ ÁÖ¾îÁø characterÀÎÁö È®ÀÎÇÏ´Â °ÍÀÌ´Ù.
-    // ¸¸¾à ÁÖ¾îÁø character°¡ ¾Æ´Ï¶ó¸é, ¿¡·¯¸¦ ¶ç¿î´Ù.
+    // chê°€ ì£¼ì–´ì§„ characterì¸ì§€ í™•ì¸í•˜ëŠ” ê²ƒì´ë‹¤.
+    // ë§Œì•½ ì£¼ì–´ì§„ characterê°€ ì•„ë‹ˆë¼ë©´, ì—ëŸ¬ë¥¼ ë„ìš´ë‹¤.
     private void check(char c) {
         ch = nextChar();
         if (ch != c) 
@@ -162,9 +162,9 @@ public class Lexer {
         ch = nextChar();
     }
     
-    // c°¡ twoÀÇ °ªÀÎÁö È®ÀÎÇÏ°í
-    // ¸Â´Ù¸é, ÇöÀç character¸¦ °Ç³Ê¶Ù°í, two¸¦ returnÇÑ´Ù.
-    // ¾Æ´Ï¶ó¸é, oneÀ» returnÇÑ´Ù.
+    // cê°€ twoì˜ ê°’ì¸ì§€ í™•ì¸í•˜ê³ 
+    // ë§žë‹¤ë©´, í˜„ìž¬ characterë¥¼ ê±´ë„ˆë›°ê³ , twoë¥¼ returní•œë‹¤.
+    // ì•„ë‹ˆë¼ë©´, oneì„ returní•œë‹¤.
     private Token chkOpt(char c, Token one, Token two) {
         // student exercise
         ch = nextChar();
@@ -181,7 +181,7 @@ public class Lexer {
         }
     }
     
-    // ÁÖ¾îÁø set¿¡ ¾ø´Â ¹®ÀÚ°¡ ÀÖÀ» ¶§±îÁö character¸¦ Ãß°¡ÇÑ´Ù.
+    // ì£¼ì–´ì§„ setì— ì—†ëŠ” ë¬¸ìžê°€ ìžˆì„ ë•Œê¹Œì§€ characterë¥¼ ì¶”ê°€í•œë‹¤.
     private String concat(String set) {
         String r = "";
         do {
@@ -191,7 +191,7 @@ public class Lexer {
         return r;
     }
     
-    // error¸¦ Ãâ·ÂÇÑ´Ù.
+    // errorë¥¼ ì¶œë ¥í•œë‹¤.
     public void error (String msg) {
         System.err.print(line);
         System.err.println("Error: column " + col + " " + msg);
