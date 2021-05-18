@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="icons">
+
+        <item>@drawable/ic_baseline_last_page_24</item>
+        <item>@drawable/ic_baseline_arrow_downward_24</item>
+    </array>
+
+    <array name="colors">
+        <item>@android:color/holo_blue_light</item>
+        <item>@android:color/holo_green_dark</item>
+    </array>
+</resources>
