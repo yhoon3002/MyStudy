@@ -1,63 +1,55 @@
-package parser;
 // Abstract syntax for the language C++Lite,
 // exactly as it appears in Appendix B.
+
 import java.util.*;
 
 
-// Program = Declarations decpart ; Block body
 class Program {
+    // Program = Declarations decpart ; Block body
     Declarations decpart;
     Block body;
-
+	
     Program (Declarations d, Block b) {
         decpart = d;
         body = b;
-    }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-            System.out.println("Program (abstract syntax:)");
-            decpart.display(++k);
-            body.display(k);
-    }
+	}
+	
+	public void display(){
+		System.out.println("Program (abstract syntrax):");
+		System.out.println("  Declarations:");
+		System.out.println("    Declarations = {");
+		for(Declaration d : decpart){
+			d.display(); 	//this one is hardcoded
+		}
+		System.out.println("    }");
+		System.out.println("  Block:");
+		body.display(2);	//2 is the initial # of spaces of the ind	
+	}
+
 }
 
-// Declarations = Declaration*
-// (a list of declarations d1, d2, ..., dn)
 class Declarations extends ArrayList<Declaration> {
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.println("Declarations: ");
-    for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("Declarations = {");
-    for (int i = 0; i < size(); i++)
-        get(i).display(k);
-    System.out.println("}");
-    }
+    // Declarations = Declaration*
+    // (a list of declarations d1, d2, ..., dn)
+	
 }
 
-
-//Declaration = Variable v; Type t
 class Declaration {
+// Declaration = Variable v; Type t
     Variable v;
     Type t;
 
     Declaration (Variable var, Type type) {
         v = var; t = type;
-    }// declaration */
-    public void display(int k) {
-            System.out.print(" <" + v + ", ");
-            System.out.print(t + "> ");
-    }
+    } // declaration */
+	
+	public void display(){
+		System.out.println("      <" + v + ", " + t + ">");
+	}
 }
 
-// Type = int | bool | char | float 
 class Type {
+    // Type = int | bool | char | float 
     final static Type INT = new Type("int");
     final static Type BOOL = new Type("bool");
     final static Type CHAR = new Type("char");
@@ -66,38 +58,41 @@ class Type {
     
     private String id;
 
-    private Type (String t) { id = t; }
+    Type (String t) { id = t; }
 
     public String toString ( ) { return id; }
+
+	//This didn't exist in the original source code ... -.-
+	public Boolean equals(Type test){ return this.id.equals(test.id); }
 }
 
-// Statement = Skip | Block | Assignment | Conditional | Loop
 abstract class Statement {
-    public void display(int k) {
-    }
+    // Statement = Skip | Block | Assignment | Conditional | Loop
+	
+	abstract void display(int ind);
 }
 
 class Skip extends Statement {
+
+	public void display(int ind){
+		System.out.print("");
+	}
 }
 
-// Block = Statement*
-//         (a Vector of members)
 class Block extends Statement {
+    // Block = Statement*
+    //         (a Vector of members)
     public ArrayList<Statement> members = new ArrayList<Statement>();
-
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.println("Display Block (for Statements)");
-    for (int i = 0; i < members.size(); i++)
-        members.get(i).display(k);
-    }
-
+	
+	public void display(int ind){
+		for (Statement s : members){
+			s.display(2 + ind);
+		}
+	}
 }
 
-// Assignment = Variable target; Expression source
 class Assignment extends Statement {
+    // Assignment = Variable target; Expression source
     Variable target;
     Expression source;
 
@@ -105,19 +100,19 @@ class Assignment extends Statement {
         target = t;
         source = e;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.println("Assignement :");
-    target.display(++k);
-    source.display(k);
-    }
-
+	
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}	
+		System.out.print("Assignment:\n");
+		target.display(2 + ind);
+		source.display(2 + ind);
+	}
 }
 
-//Conditional = Expression test; Statement thenbranch, elsebranch
 class Conditional extends Statement {
+// Conditional = Expression test; Statement thenbranch, elsebranch
     Expression test;
     Statement thenbranch, elsebranch;
     // elsebranch == null means "if... then"
@@ -129,43 +124,90 @@ class Conditional extends Statement {
     Conditional (Expression t, Statement tp, Statement ep) {
         test = t; thenbranch = tp; elsebranch = ep;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w); {
-            System.out.print("\t");
-        }
-    test.display(++k);
-    thenbranch.display(k);
-    elsebranch.display(k);
-    }
+    
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("Conditional:\n");
+		test.display(2 + ind);
+		for (int i = 0; i < (2 + ind); i++){
+			System.out.print(" ");
+		}
+		System.out.print("Then Branch:\n");
+		thenbranch.display(2 + ind);
+		for (int i = 0; i < (2 + ind); i++){
+			System.out.print(" ");
+		}
+		System.out.print("Else Branch?:\n");
+		elsebranch.display(2 + ind);
+	}
 }
 
-//Loop = Expression test; Statement body
 class Loop extends Statement {
+// Loop = Expression test; Statement body
     Expression test;
     Statement body;
 
     Loop (Expression t, Statement b) {
         test = t; body = b;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    test.display(++k);
-    body.display(k);
-    }
     
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("Loop:\n");
+		test.display(2 + ind);
+		for (int i = 0; i < (2 + ind); i++){
+			System.out.print(" ");
+		}
+		System.out.print("Block:\n");
+		body.display(2 + ind);
+	}
 }
 
-// Expression = Variable | Value | Binary | Unary
+class Print extends Statement { 
+	// Print = Expression source;
+	Expression source;
+		Print(Expression e) {
+		source = e;
+	}
+		public void display(int ind) {
+		for (int i = 0; i < ind; i++) {
+			System.out.print(" ");
+		}
+		
+		System.out.print("(Print) " + source.toString());
+		System.out.println();
+	}
+}
+
+class PrintCh extends Statement {
+// PrintCh = Expression source;
+	Expression source;
+		PrintCh(Expression e) {
+		source = e;
+	}
+		public void display(int ind) {
+		for (int i = 0; i < ind; i++) {
+			System.out.print(" ");
+		}
+		
+		if (source.toString().equals("\n")) System.out.print("(PrintCh) '\\n'");
+		else System.out.print("(PrintCh) " + source.toString());
+		System.out.println();
+	}
+}
+
 abstract class Expression {
-    public void display(int k) {
-    }
-
+    // Expression = Variable | Value | Binary | Unary
+	
+	abstract void display(int ind);
 }
 
-// Variable = String id
 class Variable extends Expression {
+    // Variable = String id
     private String id;
 
     Variable (String s) { id = s; }
@@ -178,25 +220,25 @@ class Variable extends Expression {
     }
     
     public int hashCode ( ) { return id.hashCode( ); }
-    
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.println("Variable " + id);
-    }
+	
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("Variable: " + id + "\n");
+	}
 }
 
-// Value = IntValue | BoolValue |
-//         CharValue | FloatValue
 abstract class Value extends Expression {
+    // Value = IntValue | BoolValue |
+    //         CharValue | FloatValue
     protected Type type;
     protected boolean undef = true;
 
     int intValue ( ) {
         assert false : "should never reach here";
         return 0;
-    }// implementation of this function is unnecessary can can be removed.
+    }
     
     boolean boolValue ( ) {
         assert false : "should never reach here";
@@ -218,12 +260,16 @@ abstract class Value extends Expression {
     Type type ( ) { return type; }
 
     static Value mkValue (Type type) {
-        if (type == Type.INT) return new IntValue( );
-        if (type == Type.BOOL) return new BoolValue( );
-        if (type == Type.CHAR) return new CharValue( );
-        if (type == Type.FLOAT) return new FloatValue( );
+        if (type.equals(Type.INT)) return new IntValue( );
+        if (type.equals(Type.BOOL)) return new BoolValue( );
+        if (type.equals(Type.CHAR)) return new CharValue( );
+        if (type.equals(Type.FLOAT)) return new FloatValue( );
         throw new IllegalArgumentException("Illegal type in mkValue");
-    }     
+    }
+
+	public void display(int ind){
+		System.out.println("In Value, shouldnt display right?");
+	}
 }
 
 class IntValue extends Value {
@@ -237,19 +283,18 @@ class IntValue extends Value {
         assert !undef : "reference to undefined int value";
         return value;
     }
-
+	
     public String toString( ) {
         if (undef)  return "undef";
         return "" + value;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("Int: ");
-    System.out.println(value);
-    }
-
+	
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("IntValue: " + value + "\n");
+	}
 }
 
 class BoolValue extends Value {
@@ -273,14 +318,13 @@ class BoolValue extends Value {
         if (undef)  return "undef";
         return "" + value;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("BoolValue: ");
-    System.out.println(value);
-    }
 
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("BoolValue: " + value + "\n");
+	}
 }
 
 class CharValue extends Value {
@@ -299,14 +343,13 @@ class CharValue extends Value {
         if (undef)  return "undef";
         return "" + value;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("CharValue: ");
-    System.out.println(value);
-    }
 
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("CharValue: " + value + "\n");
+	}
 }
 
 class FloatValue extends Value {
@@ -325,14 +368,13 @@ class FloatValue extends Value {
         if (undef)  return "undef";
         return "" + value;
     }
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("FloatValue: ");
-    System.out.println(value);
-    }
 
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("FloatValue: " + value + "\n");
+	}
 }
 
 class Binary extends Expression {
@@ -342,21 +384,18 @@ class Binary extends Expression {
 
     Binary (Operator o, Expression l, Expression r) {
         op = o; term1 = l; term2 = r;
-    }//binary
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("Binary: ");
-    op.display(++k);
-    term1.display(k);
-    term2.display(k);
-    } 
-    public String toString() {
-        return ("Binary: op="+op+" term1="+term1+" term2="+term2);
-    }
-}
+    } // binary
 
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("Binary:\n");
+		op.display(2 + ind);
+		term1.display(2 + ind);
+		term2.display(2 + ind);
+	}
+}
 
 class Unary extends Expression {
     // Unary = Operator op; Expression term
@@ -366,14 +405,15 @@ class Unary extends Expression {
     Unary (Operator o, Expression e) {
         op = o; term = e;
     } // unary
-    public void display(int k) {
-        for (int w = 0; w < k; ++w) {
-            System.out.print("\t");
-        }
-    System.out.print("Unary: ");
-    op.display(++k);
-    term.display(k);
-    }
+
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("Unary:\n");
+		op.display(2 + ind);
+		term.display(2 + ind);
+	}
 }
 
 class Operator {
@@ -414,7 +454,7 @@ class Operator {
     final static String INT_TIMES = "INT*";
     final static String INT_DIV = "INT/";
     // UnaryOp = !    
-    final static String INT_NEG = "-";
+	final static String INT_NEG = "INTU-"; 
     // RelationalOp = < | <= | == | != | >= | >
     final static String FLOAT_LT = "FLOAT<";
     final static String FLOAT_LE = "FLOAT<=";
@@ -428,7 +468,7 @@ class Operator {
     final static String FLOAT_TIMES = "FLOAT*";
     final static String FLOAT_DIV = "FLOAT/";
     // UnaryOp = !    
-    final static String FLOAT_NEG = "-";
+	final static String FLOAT_NEG = "FLOATU-";
     // RelationalOp = < | <= | == | != | >= | >
     final static String CHAR_LT = "CHAR<";
     final static String CHAR_LE = "CHAR<=";
@@ -443,11 +483,14 @@ class Operator {
     final static String BOOL_NE = "BOOL!=";
     final static String BOOL_GT = "BOOL>";
     final static String BOOL_GE = "BOOL>=";
+	final static String BOOL_NOT = "BOOL!";
+	final static String BOOL_AND = "BOOL&&";
+	final static String BOOL_OR = "BOOL||";
     // Type specific cast
-    final static String I2F = "I2F";
-    final static String F2I = "F2I";
-    final static String C2I = "C2I";
-    final static String I2C = "I2C";
+    final static String I2F = "ItoF";
+    final static String F2I = "FtoI";
+    final static String C2I = "CtoI";
+    final static String I2C = "ItoC";
     
     String val;
     
@@ -475,16 +518,25 @@ class Operator {
         {PLUS, INT_PLUS}, {MINUS, INT_MINUS},
         {TIMES, INT_TIMES}, {DIV, INT_DIV},
         {EQ, INT_EQ}, {NE, INT_NE}, {LT, INT_LT},
-        {LE, INT_LE}, {GT, INT_GT}, {GE, INT_GE},
-        {NEG, INT_NEG}, {FLOAT, I2F}, {CHAR, I2C}
+        {LE, INT_LE}, {GT, INT_GT}, {GE, INT_GE}
+    };
+
+    final static String intMapU[ ] [ ] = {
+        {FLOAT, I2F}, 
+        {CHAR, I2C},
+        {NEG, INT_NEG}
     };
 
     final static String floatMap[ ] [ ] = {
         {PLUS, FLOAT_PLUS}, {MINUS, FLOAT_MINUS},
         {TIMES, FLOAT_TIMES}, {DIV, FLOAT_DIV},
         {EQ, FLOAT_EQ}, {NE, FLOAT_NE}, {LT, FLOAT_LT},
-        {LE, FLOAT_LE}, {GT, FLOAT_GT}, {GE, FLOAT_GE},
-        {NEG, FLOAT_NEG}, {INT, F2I}
+        {LE, FLOAT_LE}, {GT, FLOAT_GT}, {GE, FLOAT_GE}
+    };
+
+    final static String floatMapU[ ] [ ] = {
+        {NEG, FLOAT_NEG},
+        {INT, F2I}
     };
 
     final static String charMap[ ] [ ] = {
@@ -496,7 +548,7 @@ class Operator {
     final static String boolMap[ ] [ ] = {
         {EQ, BOOL_EQ}, {NE, BOOL_NE}, {LT, BOOL_LT},
         {LE, BOOL_LE}, {GT, BOOL_GT}, {GE, BOOL_GE},
-        {AND, AND}, {OR, OR}, {NOT, NOT} 
+		{NOT, BOOL_NOT}, {AND, BOOL_AND}, {OR, BOOL_OR}
     };
 
     final static private Operator map (String[][] tmap, String op) {
@@ -511,8 +563,16 @@ class Operator {
         return map (intMap, op);
     }
 
+    final static public Operator intMapU (String op){
+        return map (intMapU, op);
+    }
+
     final static public Operator floatMap (String op) {
         return map (floatMap, op);
+    }
+
+    final static public Operator floatMapU (String op) {
+        return map (floatMapU, op);
     }
 
     final static public Operator charMap (String op) {
@@ -522,7 +582,11 @@ class Operator {
     final static public Operator boolMap (String op) {
         return map (boolMap, op);
     }
-    public void display(int k) {
-    System.out.println(val);
-    }
+	
+	public void display(int ind){
+		for (int i = 0; i < ind; i++){
+			System.out.print(" ");
+		}
+		System.out.print("Operator: " + val + "\n");
+	}
 }
